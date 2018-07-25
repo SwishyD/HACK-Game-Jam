@@ -29,34 +29,34 @@ public class GameManager : MonoBehaviour {
                 break;
 
             case States.P1Turn:
-               
-                currentPlayer = "Player1";
-              
-                if (Input.GetKeyDown(KeyCode.Mouse0)){
-                    state = States.P2Turn;
-                    Debug.Log("Player 2's Turn!");
+                Debug.Log("Player 1's Turn!");
+                currentPlayer = "Player1";              
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    state = States.P2Turn;                    
                 }
                 break;
 
             case States.P2Turn:
+                Debug.Log("Player 2's Turn!");
                 currentPlayer = "Player2";
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {
-                    state = States.P3Turn;
-                    Debug.Log("Player 3's Turn!");
+                    state = States.P3Turn;                    
                 }
                 break;
 
             case States.P3Turn:
+                Debug.Log("Player 3's Turn!");
                 currentPlayer = "Player3";
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {
-                    state = States.P4Turn;
-                    Debug.Log("Player 4's Turn!");
+                    state = States.P4Turn;                    
                 }
                 break;
 
             case States.P4Turn:
+                Debug.Log("Player 4's Turn!");
                 currentPlayer = "Player4";
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {
@@ -66,8 +66,7 @@ public class GameManager : MonoBehaviour {
                         state = States.SweepTime;
                     }
                     else
-                    {
-                        Debug.Log("Player 1's Turn!");
+                    {                        
                         state = States.P1Turn;
                     }
                     
