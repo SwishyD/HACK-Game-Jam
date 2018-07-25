@@ -18,6 +18,8 @@ public class NodeClick : MonoBehaviour {
 
     private bool buttonPressed = false;
 
+    public List<GameObject> connectedNodes;
+
 
 
     // Use this for initialization
@@ -34,32 +36,44 @@ public class NodeClick : MonoBehaviour {
     {
         if (buttonPressed == false)
         {
-            buttonPressed = true;
-            Debug.Log("Hack Initiated!");
-            if (Random.Range(minSuccessRate, maxSuccessRate) >= successRate)
+            for (int i = 0; i < connectedNodes.Count; i++)
             {
-                StartCoroutine(WaitTimeSuccess());
+                if (connectedNodes[i].gameObject.tag == "Player1")
+                {
+                    Debug.Log("Valid Node");
+                    HackAttempt();
+                    break;
+                }
+  
             }
-            else
-            {
-                StartCoroutine(WaitTimeFail());
-
-            }
+            Debug.Log("Invalid Node");
         }
         else if (buttonPressed == true)
         {
             Debug.Log("Node Already Captured!");
         }
 
+    }
 
+    private void HackAttempt()
+    {
+        buttonPressed = true;
+        Debug.Log("Hack Initiated!");
+        if (Random.Range(minSuccessRate, maxSuccessRate) >= successRate)
+        {
+            StartCoroutine(WaitTimeSuccess());
+        }
+        else
+        {
+            StartCoroutine(WaitTimeFail());
 
-
-
+        }
     }
 
     IEnumerator WaitTimeSuccess()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
+        this.tag = "Player1";
         Debug.Log("Hack Successful!");
         spriteRenderer.sprite = pushed;
        
@@ -67,7 +81,7 @@ public class NodeClick : MonoBehaviour {
 
     IEnumerator WaitTimeFail()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         Debug.Log("Hack Failed!");
         buttonPressed = false;
 
