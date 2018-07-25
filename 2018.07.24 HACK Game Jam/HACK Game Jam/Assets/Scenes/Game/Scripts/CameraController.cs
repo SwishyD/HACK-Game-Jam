@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-    private Vector3 pos;
+    Vector3 pos;
     float edgeSize = 50f;
     float speed = 20f;
-    // Use this for initialization
+
+    public Vector2 panLimit;
+    
     void Start () {
         pos = transform.position;
     }
@@ -30,6 +32,9 @@ public class CameraController : MonoBehaviour {
         {
             pos.y -= speed * Time.deltaTime;
         }
+
+        pos.x = Mathf.Clamp(pos.x, -panLimit.x, panLimit.x);
+        pos.y = Mathf.Clamp(pos.y, -panLimit.y, panLimit.y);
         transform.position = pos;
     }
 }
