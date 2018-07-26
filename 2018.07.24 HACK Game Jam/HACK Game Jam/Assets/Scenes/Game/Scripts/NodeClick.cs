@@ -1,51 +1,59 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NodeClick : MonoBehaviour {
 
 
 
-    public Sprite pushed;
-    public Sprite notPushed;
+    public SpriteRenderer spriteRenderer;
 
-    private SpriteRenderer spriteRenderer;
+    private bool printError;
 
-    public int successRate = 50;
-
-    private int minSuccessRate = 0;
-    private int maxSuccessRate = 100;
-
-    private bool buttonPressed = false;
+    public bool buttonPressed;
 
     public List<GameObject> connectedNodes;
+
+    private string currentPlayer;
+
+    public int successRate;
+
+    public int PPGained;
+
+    public Text ppGainText;
+    public Text successRateText;
 
 
 
     // Use this for initialization
     void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
+        buttonPressed = false;
+}
 	
 	// Update is called once per frame
 	void Update () {
-		
+        currentPlayer = GameManager.instance.currentPlayer;
 	}
 
     private void OnMouseDown()
     {
+        printError = true;
         if (buttonPressed == false)
         {
             for (int i = 0; i < connectedNodes.Count; i++)
             {
-                if (connectedNodes[i].gameObject.tag == "Player1")
+                if (connectedNodes[i].gameObject.tag == currentPlayer)
                 {
                     Debug.Log("Valid Node");
-                    HackAttempt();
+                    GameManager.instance.HackAttempt(gameObject);
+                    printError = false;
                     break;
                 }
   
             }
+            if(printError == true)
             Debug.Log("Invalid Node");
         }
         else if (buttonPressed == true)
@@ -55,36 +63,12 @@ public class NodeClick : MonoBehaviour {
 
     }
 
-    private void HackAttempt()
+    private void OnMouseOver()
     {
-        buttonPressed = true;
-        Debug.Log("Hack Initiated!");
-        if (Random.Range(minSuccessRate, maxSuccessRate) >= successRate)
-        {
-            StartCoroutine(WaitTimeSuccess());
-        }
-        else
-        {
-            StartCoroutine(WaitTimeFail());
-
-        }
+        ppGainText.text = PPGained.ToString();
+        successRateText.text = "Success Chance " + successRate.ToString() + "%";
     }
 
-    IEnumerator WaitTimeSuccess()
-    {
-        yield return new WaitForSeconds(1);
-        this.tag = "Player1";
-        Debug.Log("Hack Successful!");
-        spriteRenderer.sprite = pushed;
-       
-    }
 
-    IEnumerator WaitTimeFail()
-    {
-        yield return new WaitForSeconds(1);
-        Debug.Log("Hack Failed!");
-        buttonPressed = false;
 
-        
-    }
 }
