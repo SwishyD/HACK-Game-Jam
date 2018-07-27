@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour {
 
     public string currentPlayer;
 
-    public enum States { P1Turn, P2Turn, P3Turn, P4Turn, SweepTime};
+    public enum States { P1Turn, P2Turn, P3Turn, P4Turn, SweepTime, Victory};
     private States state;
 
     public static GameManager instance = null;
@@ -32,12 +32,21 @@ public class GameManager : MonoBehaviour {
 
     public Text currentPlayerTurnText;
     public Text currentPlayerPPText;
+    public Text winningPlayerText;
+    public GameObject victoryPanel;
+
+    public GameObject gameCamera;
+
+    private AudioSource source;
+    public AudioClip failSound;
+    public AudioClip successSound;
 
 
 
 
     private void Awake()
     {
+        source = GetComponent<AudioSource>();
         if (instance == null)
         {
             instance = this;
@@ -50,8 +59,10 @@ public class GameManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         state = States.P1Turn;
+        gameCamera.transform.position = new Vector3(-3, 5, -10);
         currentPlayer = "Player1";
         Debug.Log("Player1's Turn!");
+        winningPlayerText.text = "";
         threatTimer = 0;
         p1PP = 0;
         p2PP = 0;
@@ -109,6 +120,10 @@ public class GameManager : MonoBehaviour {
                 currentPlayer = "Player4";
                 
                 break;
+
+            case States.Victory:
+
+                break;
         }
     }
 
@@ -129,9 +144,14 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator WaitTimeSuccess(GameObject node)
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
+        if (node.tag == "CenterNode")
+        {
+            StartCoroutine(Victory());
+        }
         node.GetComponent<NodeClick>().buttonPressed = true;
         node.tag = currentPlayer;
+        source.PlayOneShot(successSound);
         Debug.Log("Hack Successful!");
         if (state == States.P1Turn)
         {
@@ -154,30 +174,63 @@ public class GameManager : MonoBehaviour {
             p4PP += node.GetComponent<NodeClick>().PPGained;
         }
         if (state == States.P1Turn)
+        {
+            //gameCamera.transform.position = new Vector3(3, 5, -10);
             state = States.P2Turn;
+        }
         else if (state == States.P2Turn)
+        {
+            //gameCamera.transform.position = new Vector3(3, -5, -10);
             state = States.P3Turn;
+        }
         else if (state == States.P3Turn)
+        {
+            //gameCamera.transform.position = new Vector3(-3, -5, -10);
             state = States.P4Turn;
+        }
         else if (state == States.P4Turn)
+        {
+            //gameCamera.transform.position = new Vector3(-3, 5, -10);
             state = States.P1Turn;
+        }
 
     }
 
     IEnumerator WaitTimeFail(GameObject node)
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         Debug.Log("Hack Failed!");
+        source.PlayOneShot(failSound);
         node.GetComponent<NodeClick>().buttonPressed = false;
         if (state == States.P1Turn)
+        {
+            //gameCamera.transform.position = new Vector3(3, 5, -10);
             state = States.P2Turn;
+        }
         else if (state == States.P2Turn)
+        {
+            //gameCamera.transform.position = new Vector3(3, -5, -10);
             state = States.P3Turn;
+        }
         else if (state == States.P3Turn)
+        {
+            //gameCamera.transform.position = new Vector3(-3, -5, -10);
             state = States.P4Turn;
+        }
         else if (state == States.P4Turn)
+        {
+            //gameCamera.transform.position = new Vector3(-3, 5, -10);
             state = States.P1Turn;
+        }
 
     }
+
+    IEnumerator Victory()
+    {
+        winningPlayerText.text = currentPlayer + " Wins!";
+        victoryPanel.SetActive(true);
+        yield return new WaitForSeconds(3);
+    }
+
 
 }

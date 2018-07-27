@@ -23,6 +23,9 @@ public class NodeClick : MonoBehaviour {
 
     public Text ppGainText;
     public Text successRateText;
+    public Text statusText;
+
+    public int currentPlayerPP;
 
 
 
@@ -30,16 +33,19 @@ public class NodeClick : MonoBehaviour {
     void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
         buttonPressed = false;
+        statusText.text = "";
 }
 	
 	// Update is called once per frame
 	void Update () {
         currentPlayer = GameManager.instance.currentPlayer;
+        currentPlayerPP = GameManager.instance.currentPlayerPP;
 	}
 
     private void OnMouseDown()
     {
         printError = true;
+        statusText.text = "";
         if (buttonPressed == false)
         {
             for (int i = 0; i < connectedNodes.Count; i++)
@@ -54,7 +60,7 @@ public class NodeClick : MonoBehaviour {
   
             }
             if(printError == true)
-            Debug.Log("Invalid Node");
+                statusText.text = "Invalid Node";
         }
         else if (buttonPressed == true)
         {
@@ -66,7 +72,7 @@ public class NodeClick : MonoBehaviour {
     private void OnMouseOver()
     {
         ppGainText.text = PPGained.ToString();
-        successRateText.text = "Success Chance " + successRate.ToString() + "%";
+        successRateText.text = "Success Chance " + (successRate + currentPlayerPP).ToString() + "%";
     }
 
 
